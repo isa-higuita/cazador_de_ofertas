@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block navbar %}
+<nav style="background-color: #e6f2ff; padding: 10px; text-align: center;">
+    <a href="{{ url_for('index') }}" class="nav-btn">Inicio</a>
+    <a href="{{ url_for('productos.obtener_productos') }}" class="nav-btn">Productos</a>
+    <a href="{{ url_for('lista_deseos.ver_lista_deseos') }}" class="nav-btn">Lista de Deseos</a>
+    <a href="{{ url_for('alertas.ver_alertas') }}" class="nav-btn">Ver Alertas</a>
+    <a href="{{ url_for('usuarios.cerrar_sesion') }}" class="nav-btn" style="background-color: #ff4d4d;">Cerrar Sesión</a>
+</nav>
+{% endblock %}
+
+<style>
+    body {
+        background-color: #f6f9fc;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .form-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .card-custom {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+
+    .card-header-custom {
+        padding: 20px;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .soft-blue {
+        background-color: #cfe8fc;
+        color: #0a3d62;
+    }
+
+    .soft-green {
+        background-color: #d2f4ea;
+        color: #1b5e20;
+    }
+
+    .card-body {
+        padding: 25px;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .form-control {
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+    }
+
+    .btn-soft-blue {
+        background-color: #4f9dde;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+    }
+
+    .btn-soft-blue:hover {
+        background-color: #3588c6;
+    }
+
+    .btn-soft-green {
+        background-color: #43aa8b;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+    }
+
+    .btn-soft-green:hover {
+        background-color: #368c72;
+    }
+
+    .nav-btn {
+        display: inline-block;
+        background-color: #4da6ff;
+        color: white;
+        padding: 8px 16px;
+        margin: 5px;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .nav-btn:hover {
+        background-color: #3399ff;
+    }
+
+    .nav-btn[style*="background-color: #ff4d4d;"] {
+        background-color: #ff4d4d;
+    }
+
+    .nav-btn[style*="background-color: #ff4d4d;"]:hover {
+        background-color: #ff3333;
+    }
+</style>
+
+{% block content %}
+<div style="text-align: center; margin-top: 30px;">
+    <h2 style="color: #004080;">¡Bienvenido a Cazador de Ofertas!</h2>
+    <p style="font-size: 18px;">Explora productos, crea alertas de precios y guarda tus favoritos en tu lista de deseos.</p>
+</div>
+
+<!-- Barra de Búsqueda -->
+<form method="GET" action="{{ url_for('index') }}" style="margin-top: 30px; text-align: center;">
+    <input type="text" name="busqueda" placeholder="Buscar producto..." value="{{ busqueda or '' }}" 
+           class="form-control" 
+           style="display: inline-block; width: 250px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; margin-right: 10px;">
+    <button type="submit" class="btn-soft-blue">Buscar</button>
+</form>
+
+<!-- Resultados de la Búsqueda -->
+<div class="form-container" style="margin-top: 30px;">
+    {% if busqueda %}
+        {% if productos %}
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+                {% for producto in productos %}
+                    <div class="card-custom soft-blue" style="width: 300px;">
+                        <div class="card-header-custom">{{ producto['nombre'] }}</div>
+                        <div class="card-body" style="text-align: center;">
+                            <!-- Mostrar la imagen del producto -->
+                            <img src="{{ producto['imagen'] }}" alt="{{ producto['nombre'] }}" style="width: 120px; height: 120px; object-fit: cover; margin-bottom: 10px;">
+                            <p style="margin: 5px 0;">{{ producto['descripcion'] }}</p>
+                            <p style="font-size: 1.1rem;">Precio actual: ${{ producto['precio'] if producto['precio'] else 'No disponible' }}</p>
+                            <p style="color: #555;">Tienda: {{ producto['tienda'] }}</p>
+
+                            <!-- Botón para añadir a Lista de Deseos -->
+                            <form action="{{ url_for('lista_deseos.agregar_a_lista') }}" method="post" style="margin-top: 10px;">
+                                <input type="hidden" name="producto_id" value="{{ producto['idproducto'] }}">
+                                <button type="submit" class="btn-soft-green">Añadir a carrito</button>
+                            </form>
+
+                            <!-- Botón para mostrar/ocultar el formulario de alerta -->
+                            <button class="btn-soft-blue" onclick="mostrarFormulario('{{ producto[idproducto] }}')" style="margin-top: 10px;">Crear Alerta</button>
+
+
+                            <!-- Formulario oculto para crear alerta -->
+                            <form id="form_alerta_{{ producto['idproducto'] }}" class="form-alerta" action="{{ url_for('alertas.agregar_alerta') }}" method="post" style="display: none; margin-top: 10px;">
+                                <label>Producto ID:</label>
+                                <input type="text" name="producto_id" value="{{ producto['idproducto'] }}" readonly class="form-control">
+
+                                <label>Usuario ID:</label>
+                                <input type="text" name="usuario_id" value="{{ session.get('usuario_id') }}" readonly class="form-control">
+
+                                <label>Precio objetivo:</label>
+                                <input type="number" name="precio_objetivo" step="0.01" required class="form-control">
+
+                                <button type="submit" class="btn-soft-green" style="margin-top: 5px;">Confirmar</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="text-align: center; margin-top: 20px;">No se encontraron productos.</p>
+        {% endif %}
+    {% endif %}
+</div>
+
+<script>
+    function mostrarFormulario(id) {
+        const form = document.getElementById('form_alerta_' + id);
+        form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+    }
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+

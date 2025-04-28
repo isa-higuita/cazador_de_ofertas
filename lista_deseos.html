@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de Deseos{% endblock %}
+
+{% block content %}
+<h2 style="text-align:center; font-size:2em; color:#2c3e50;">Tu Lista de Deseos</h2>
+
+<ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; justify-content: center;">
+    {% for producto in productos %}
+        <li style="border: 1px solid #ddd; border-radius: 10px; margin: 15px; padding: 20px; width: 250px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); background-color: #f9fcff;">
+            <img src="{{ producto.imagen }}" alt="{{ producto.nombre }}" style="width:100px; height:100px; object-fit: cover; margin-bottom: 10px;">
+            <h3 style="color:#34495e;">{{ producto.nombre }}</h3>
+            <p style="font-size: 0.9em; color:#555;">{{ producto.descripcion }}</p>
+            <form action="{{ url_for('lista_deseos.eliminar_de_lista', producto_id=producto.idproducto) }}" method="post">
+                <button type="submit" style="padding: 8px 12px; background-color: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">Eliminar</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
+

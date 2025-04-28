@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Registro e Inicio de Sesión{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f6f9fc;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .form-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .card-custom {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+
+    .card-header-custom {
+        padding: 20px;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .soft-blue {
+        background-color: #cfe8fc;
+        color: #0a3d62;
+    }
+
+    .soft-green {
+        background-color: #d2f4ea;
+        color: #1b5e20;
+    }
+
+    .card-body {
+        padding: 25px;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .form-control {
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+    }
+
+    .btn-soft-blue {
+        background-color: #4f9dde;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+    }
+
+    .btn-soft-blue:hover {
+        background-color: #3588c6;
+    }
+
+    .btn-soft-green {
+        background-color: #43aa8b;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+    }
+
+    .btn-soft-green:hover {
+        background-color: #368c72;
+    }
+</style>
+
+<div class="form-container">
+    <!-- Registro -->
+    <div class="card-custom">
+        <div class="card-header-custom soft-blue">
+            Registro
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('usuarios.registrar_usuario') }}" method="post">
+                <label for="nombre" class="form-label">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" required>
+
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+
+                <label for="contraseña" class="form-label">Contraseña:</label>
+                <input type="password" id="contraseña" name="contraseña" class="form-control" required>
+
+                <button type="submit" class="btn btn-soft-blue">Registrarse</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Iniciar Sesión -->
+    <div class="card-custom">
+        <div class="card-header-custom soft-green">
+            Iniciar Sesión
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('usuarios.iniciar_sesion') }}" method="post">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+
+                <label for="contraseña" class="form-label">Contraseña:</label>
+                <input type="password" id="contraseña" name="contraseña" class="form-control" required>
+
+                <button type="submit" class="btn btn-soft-green">Iniciar Sesión</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+

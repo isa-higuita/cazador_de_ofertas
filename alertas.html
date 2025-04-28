@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Alertas{% endblock %}
+
+{% block content %}
+<h2 style="text-align:center; font-size:2em; color:#2c3e50;">Mis Alertas de Precio</h2>
+
+<ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; justify-content: center;">
+    {% for alerta in alertas %}
+        <li style="border: 1px solid #ddd; border-radius: 10px; margin: 15px; padding: 20px; width: 250px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); background-color: #f0f8ff;">
+            <img src="{{ alerta.imagen }}" alt="{{ alerta.nombre }}" style="width:100px; height:100px; object-fit: cover; margin-bottom: 10px;">
+            <h3 style="color:#34495e;">{{ alerta.nombre }}</h3>
+            <p style="font-size: 0.9em; color:#2980b9;"><strong>Precio Objetivo:</strong> ${{ alerta.precio_objetivo }}</p>
+            <p style="font-size: 0.9em; color:#27ae60;"><strong>Precio Actual:</strong> ${{ alerta.precio if alerta.precio else "No disponible" }}</p>
+            <form action="{{ url_for('alertas.eliminar_alerta', idalerta=alerta.idalerta) }}" method="post">
+                <button type="submit" style="padding: 8px 12px; background-color: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">Eliminar</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
+
+
+
